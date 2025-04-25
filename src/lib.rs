@@ -14,12 +14,12 @@ pub struct HEPEVTCommonBlock<const N: usize> {
     pub idhep_: [i32; N],
 
     // 2D arrays (FORTRAN column-major: [rows][cols])
-    pub jmohep_: [[i32; N]; 2],
-    pub jdahep_: [[i32; N]; 2],
+    pub jmohep_: [[i32; 2]; N],
+    pub jdahep_: [[i32; 2]; N],
 
     // Double precision arrays
-    pub phep_: [[f64; N]; 5],
-    pub vhep_: [[f64; N]; 4],
+    pub phep_: [[f64; 5]; N],
+    pub vhep_: [[f64; 4]; N],
 }
 
 #[link(name = "common_block")]  
@@ -41,10 +41,10 @@ pub struct HEPEVT<const N: usize> {
     pub nhep: i32,
     pub isthep: [i32; N],
     pub idhep: [i32; N],
-    pub jmohep: [[i32; N]; 2],
-    pub jdahep: [[i32; N]; 2],
-    pub phep: [[f64; N]; 5],
-    pub vhep: [[f64; N]; 4],
+    pub jmohep: [[i32; 2]; N],
+    pub jdahep: [[i32; 2]; N],
+    pub phep: [[f64; 5]; N],
+    pub vhep: [[f64; 4]; N],
 }
 
 
@@ -55,10 +55,10 @@ impl<const N:usize> HEPEVT<N> {
             nhep: 0,
             idhep: [0; N],
             isthep: [0; N],
-            jmohep: [[0; N]; 2],
-            jdahep: [[0; N]; 2],
-            phep: [[0.0; N]; 5],
-            vhep: [[0.0; N]; 4],
+            jmohep: [[0; 2]; N],
+            jdahep: [[0; 2]; N],
+            phep: [[0.0; 5]; N],
+            vhep: [[0.0; 4]; N],
         }
     }
 }
@@ -87,15 +87,15 @@ impl<const N:usize> HEPEVT<N> {
         for i in 0..NMXHEP {
             hepevt.isthep_[i] = self.isthep[i];
             hepevt.idhep_[i] = self.idhep[i];
-            hepevt.jmohep_[0][i] = self.jmohep[0][i];
-            hepevt.jmohep_[1][i] = self.jmohep[1][i];
-            hepevt.jdahep_[0][i] = self.jdahep[0][i];
-            hepevt.jdahep_[1][i] = self.jdahep[1][i];
+            hepevt.jmohep_[i][0] = self.jmohep[i][0];
+            hepevt.jmohep_[i][1] = self.jmohep[i][1];
+            hepevt.jdahep_[i][0] = self.jdahep[i][0];
+            hepevt.jdahep_[i][1] = self.jdahep[i][1];
             for j in 0..5 {
-                hepevt.phep_[j][i] = self.phep[j][i];
+                hepevt.phep_[i][j] = self.phep[i][j];
             }
             for j in 0..4 {
-                hepevt.vhep_[j][i] = self.vhep[j][i];
+                hepevt.vhep_[i][j] = self.vhep[i][j];
             }
         }
     }
@@ -160,6 +160,11 @@ mod tests {
         let evt_loaded = HEPEVT::copy_from_custom_common_block(&raw const hepevt_);
 
         assert_eq!(evt_loaded.nevhep, 43);
+        assert_eq!(evt_loaded.jmohep[0][0], 11);
+        assert_eq!(evt_loaded.jmohep[0][1], 21);
+
+        assert_eq!(evt_loaded.jmohep[2][0], 13);
+        assert_eq!(evt_loaded.jmohep[2][1], 23);
     }
 }
 
