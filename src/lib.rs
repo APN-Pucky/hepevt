@@ -1,6 +1,5 @@
 // Include the generated constant file
 include!("hepevt_size.rs");
-
 //
 //#[repr(C)]
 #[allow(non_upper_case_globals)]
@@ -23,26 +22,16 @@ pub struct HEPEVTCommonBlock<const N: usize> {
     pub vhep_: [[f64; N]; 4],
 }
 
+#[link(name = "common_block")]  
 unsafe extern "C" {
     #[link_name = "hepevt_"]
     pub static mut hepevt_: HEPEVTCommonBlock<NMXHEP>;
 }
-//    // Scalars
-//    pub static mut nevhep_: i32;
-//    pub static mut nhep_: i32;
-//
-//    // 1D arrays
-//    pub static mut isthep_: [i32; NMXHEP];
-//    pub static mut idhep_: [i32; NMXHEP];
-//
-//    // 2D arrays (FORTRAN column-major: [rows][cols])
-//    pub static mut jmohep_: [[i32; NMXHEP]; 2];
-//    pub static mut jdahep_: [[i32; NMXHEP]; 2];
-//
-//    // Double precision arrays
-//    pub static mut phep_: [[f64; NMXHEP]; 5];
-//    pub static mut vhep_: [[f64; NMXHEP]; 4];
 
+#[link(name = "common_block")]  
+unsafe extern "C" {
+    fn hepevt_dummy_function_() -> i32;
+}
 
 
 #[derive(Debug, Clone)]
@@ -125,9 +114,12 @@ impl HEPEVT<NMXHEP> {
 #[cfg(test)]
 mod tests {
 
+    use serial_test::serial;
+
     use super::*;
 
     #[test]
+    #[serial]
     fn test_hepevt_new() {
         let evt = HEPEVT::<NMXHEP>::new();
         assert_eq!(evt.nevhep, 0);
@@ -136,6 +128,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_store_and_load() {
         // Initialize HEPEVT and modify some values
         let mut evt = HEPEVT::new();
@@ -154,6 +147,20 @@ mod tests {
         assert_eq!(evt_loaded.nhep, 2);
         assert_eq!(evt_loaded.idhep[0], 11);
         assert_eq!(evt_loaded.phep[0][0], 100.0);
+    }
+
+    #[test]
+    #[serial]
+    fn test_read() {
+        // Initialize HEPEVT and modify some values
+        unsafe {
+            assert_eq!(hepevt_dummy_function_(), 1);
+        }
+        // Load from common block
+        let evt_loaded = HEPEVT::copy_from_custom_common_block(&raw const hepevt_);
+
+
+        assert_eq!(evt_loaded.nevhep, 43);
     }
 }
 
