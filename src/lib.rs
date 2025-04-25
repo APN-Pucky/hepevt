@@ -73,41 +73,52 @@ impl<const N:usize> HEPEVT<N> {
     }
 }
 
-impl HEPEVT<NMXHEP> {
-    pub fn copy_from_common_block() -> Self {
-        unsafe {
-            HEPEVT {
-                nevhep: hepevt_.nevhep_,
-                nhep: hepevt_.nhep_,
-                isthep: hepevt_.isthep_,
-                idhep: hepevt_.idhep_,
-                jmohep: hepevt_.jmohep_,
-                jdahep: hepevt_.jdahep_,
-                phep: hepevt_.phep_,
-                vhep: hepevt_.vhep_,
-            }
+
+
+impl<const N:usize> HEPEVT<N> {
+    pub fn copy_from_custom_common_block(hepevt : *const HEPEVTCommonBlock<N> ) -> Self {
+        let hepevt = unsafe { &*hepevt };
+        HEPEVT {
+            nevhep: hepevt.nevhep_,
+            nhep: hepevt.nhep_,
+            isthep: hepevt.isthep_,
+            idhep: hepevt.idhep_,
+            jmohep: hepevt.jmohep_,
+            jdahep: hepevt.jdahep_,
+            phep: hepevt.phep_,
+            vhep: hepevt.vhep_,
         }
     }
 
-    pub fn copy_to_common_block(&self) {
-        unsafe {
-            hepevt_.nevhep_ = self.nevhep;
-            hepevt_.nhep_ = self.nhep;
-            for i in 0..NMXHEP {
-                hepevt_.isthep_[i] = self.isthep[i];
-                hepevt_.idhep_[i] = self.idhep[i];
-                hepevt_.jmohep_[0][i] = self.jmohep[0][i];
-                hepevt_.jmohep_[1][i] = self.jmohep[1][i];
-                hepevt_.jdahep_[0][i] = self.jdahep[0][i];
-                hepevt_.jdahep_[1][i] = self.jdahep[1][i];
-                for j in 0..5 {
-                    hepevt_.phep_[j][i] = self.phep[j][i];
-                }
-                for j in 0..4 {
-                    hepevt_.vhep_[j][i] = self.vhep[j][i];
-                }
+    pub fn copy_to_custom_common_block(&self, hepevt : *mut HEPEVTCommonBlock<N>) {
+        let hepevt = unsafe { &mut *hepevt };
+        hepevt.nevhep_ = self.nevhep;
+        hepevt.nhep_ = self.nhep;
+        for i in 0..NMXHEP {
+            hepevt.isthep_[i] = self.isthep[i];
+            hepevt.idhep_[i] = self.idhep[i];
+            hepevt.jmohep_[0][i] = self.jmohep[0][i];
+            hepevt.jmohep_[1][i] = self.jmohep[1][i];
+            hepevt.jdahep_[0][i] = self.jdahep[0][i];
+            hepevt.jdahep_[1][i] = self.jdahep[1][i];
+            for j in 0..5 {
+                hepevt.phep_[j][i] = self.phep[j][i];
+            }
+            for j in 0..4 {
+                hepevt.vhep_[j][i] = self.vhep[j][i];
             }
         }
+    }
+}
+
+
+impl HEPEVT<NMXHEP> {
+    pub fn copy_from_common_block() -> Self {
+        return HEPEVT::copy_from_custom_common_block(  &raw const hepevt_ );
+    }
+
+    pub fn copy_to_common_block(&self)  {
+        self.copy_to_custom_common_block( &raw mut hepevt_);
     }
 }
 
