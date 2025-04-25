@@ -3,7 +3,7 @@ fn main() {
 
 
     let output = format!("//This file is automatically generate by build.rs\n//Do not modify!\npub const NMXHEP: usize = {};", nmxhep);
-    std::fs::write("src/hepevt_size.rs", output).expect("Failed to write generated code");
+    std::fs::write("generated/hepevt_size.rs", output).expect("Failed to write generated code");
 
     let output = format!("!This file is automatically generate by build.rs\n!Do not modify!\n      PARAMETER (NMXHEP={})", nmxhep);
     std::fs::write("fortran/hepevt_size.h", output).expect("Failed to write generated code");

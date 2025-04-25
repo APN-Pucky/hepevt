@@ -1,5 +1,5 @@
 // Include the generated constant file
-include!("hepevt_size.rs");
+include!("../generated/hepevt_size.rs");
 //
 //#[repr(C)]
 #[allow(non_upper_case_globals)]
