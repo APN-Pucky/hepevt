@@ -30,6 +30,7 @@ unsafe extern "C" {
 
 #[link(name = "common_block")]  
 unsafe extern "C" {
+    #[allow(dead_code)]
     fn hepevt_dummy_function_() -> i32;
 }
 
@@ -115,7 +116,6 @@ impl HEPEVT<NMXHEP> {
 mod tests {
 
     use serial_test::serial;
-
     use super::*;
 
     #[test]
@@ -154,11 +154,10 @@ mod tests {
     fn test_read() {
         // Initialize HEPEVT and modify some values
         unsafe {
-            assert_eq!(hepevt_dummy_function_(), 1);
+            assert_eq!(hepevt_dummy_function_(), NMXHEP as i32);
         }
         // Load from common block
         let evt_loaded = HEPEVT::copy_from_custom_common_block(&raw const hepevt_);
-
 
         assert_eq!(evt_loaded.nevhep, 43);
     }
