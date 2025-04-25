@@ -3,6 +3,12 @@ name = "hepevt"
 version = "0.1.0"
 edition = "2024"
 build = "build.rs"
+license-file = "LICENSE"
+description = "HEPEVT format"
+homepage = "https://github.com/APN-Pucky/hepevt"
+repository = "https://github.com/APN-Pucky/hepevt"
+readme = "README.md"
+
 
 [build-dependencies]
 cc = "1.0"
