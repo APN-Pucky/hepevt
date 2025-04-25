@@ -10,7 +10,6 @@ fn main() {
 
     cc::Build::new()
         .file("fortran/common_block.F")
-        .compiler("gfortran")
         .define("hepevt_nmxhep", nmxhep) // Pass nmxhep as a define
         .compile("common_block"); // outputs libcommon_block.a
 
